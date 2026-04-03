@@ -1,23 +1,17 @@
+import express, { Application } from "express";
+import cors from "cors";
+import routes from "./routes";
 
-import express,{Application} from 'express'
-import cors from 'cors'
-import authRoutes from './routes/authRoutes'
-import productRoutes from './routes/productRoutes'
+const app: Application = express();
 
+app.use(express.json());
+app.use(cors());
 
-const app:Application=express()
+// 🔥 use central routes
+app.use("/api", routes);
 
-app.use(express.json())
-app.use(cors())
+app.get("/home", (req, res) => {
+  res.send("Api is Running");
+});
 
-
-app.use("/api/auth", authRoutes);
-app.use("/api/product", productRoutes);
-
-app.get('/home',(req,res)=>{
-    res.send("Api is Running ")
-})
-
-
-export default app
-
+export default app;

@@ -8,4 +8,4 @@ export const connectDB=async ():Promise<void>=>{
         console.error("DataBase Connection Failed",err)
         
     }
-}
+} 
