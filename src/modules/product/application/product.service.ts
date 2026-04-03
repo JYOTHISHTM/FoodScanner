@@ -2,6 +2,7 @@ import { fetchProductFromAPI } from "../infrastructure/product.repository";
 
 export const getProductByBarcodeService = async (barcode: string) => {
   const product = await fetchProductFromAPI(barcode);
+  
 
   if (!product) {
     throw new Error("Product not found");

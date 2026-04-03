@@ -5,5 +5,7 @@ export const fetchProductFromAPI = async (barcode: string) => {
     `https://world.openfoodfacts.org/api/v0/product/${barcode}.json`
   );
 
+  
+
   return response.data.product;
 };
