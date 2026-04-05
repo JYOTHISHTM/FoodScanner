@@ -1,9 +1,9 @@
 // infra/scan.repository.ts
-import { ScanModel } from "../../scan/domain/scan.model";
+import { HistoryModel } from "../domain/history.model";
 
-export class ScanRepository {
+export class HistoryRepository {
   async create(data: any) {
-    return await ScanModel.create(data);
+    return await HistoryModel.create(data);
   }
 
   async findAll(userId: string, query: any) {
@@ -30,12 +30,12 @@ export class ScanRepository {
     if (sort === "za") sortOption = { name: -1 };
     if (sort === "score") sortOption = { score: -1 };
 
-    const scans = await ScanModel.find(filter)
+    const scans = await HistoryModel.find(filter)
       .sort(sortOption)
       .skip(skip)
       .limit(limit);
 
-    const total = await ScanModel.countDocuments(filter);
+    const total = await HistoryModel.countDocuments(filter);
 
     return {
       scans,

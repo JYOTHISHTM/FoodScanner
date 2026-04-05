@@ -1,9 +1,9 @@
 // routes/scanRoutes.ts
 import express from "express";
-import { getScans } from "../interface/scan.controller";
+import { getHistory } from "./history.controller";
 
 const router = express.Router();
 
-router.get("/", getScans);
+router.get("/", getHistory);
 
 export default router;

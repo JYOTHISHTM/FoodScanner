@@ -1,9 +1,9 @@
 import { fetchProductFromAPI } from "../infrastructure/product.repository";
-import { ScanService } from "../../scan/application/scan.service";
+import { HistoryService } from "../../history/application/history.service";
 
 export const getProductByBarcodeService = async (barcode: string) => {
   const product = await fetchProductFromAPI(barcode);
-  const scanService = new ScanService();
+  const historyService = new HistoryService();
 
   if (!product) {
     throw new Error("Product not found");
@@ -37,7 +37,7 @@ export const getProductByBarcodeService = async (barcode: string) => {
   const score = calculateScore(data);
   const insights = getHealthInsights(data);
 
-   await scanService.saveScan({
+   await historyService.saveScan({
     userId: "demoUser", // replace with real user later
     name: data.name,
     brand: data.brand,

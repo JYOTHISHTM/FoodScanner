@@ -1,13 +1,13 @@
 // interface/scan.controller.ts
 import { Request, Response } from "express";
-import { ScanService } from "../application/scan.service";
+import { HistoryService } from "../application/history.service";
 
-const service = new ScanService();
+const service = new HistoryService();
 
-export const getScans = async (req: Request, res: Response) => {
+export const getHistory = async (req: Request, res: Response) => {
   try {
     const userId = "demoUser"; // replace with auth later
-    const result = await service.getScans(userId, req.query);
+    const result = await service.getHistory(userId, req.query);
     res.json(result);
   } catch {
     res.status(500).json({ message: "Error fetching scans" });
