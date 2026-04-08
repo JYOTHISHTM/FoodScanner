@@ -8,7 +8,8 @@ export interface IUser {
   gender?: "male" | "female" | "other";
   weight?: number;
   height?: number;
-
+  isBlocked: boolean
+  blockedAt: Date
   allergies?: string[];
 
   createdAt?: Date;
@@ -25,6 +26,9 @@ const userSchema = new Schema(
     gender: { type: String, enum: ["male", "female", "other"] },
     weight: Number,
     height: Number,
+
+    isBlocked: { type: Boolean, default: false },
+    blockedAt: { type: Date, default: null },
 
     allergies: [String],
   },
