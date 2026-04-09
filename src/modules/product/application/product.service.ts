@@ -1,13 +1,36 @@
+
+interface Nutriments {
+  sugars?: number;
+  fat?: number;
+  proteins?: number;
+  "energy-kcal"?: number;
+  "nova-group"?: number;
+}
+
+interface Product {
+  product_name?: string;
+  ingredients_text?: string;
+  nutriments?: Nutriments;
+  additives_tags?: string[];
+  image_url?: string;
+  quantity?: string;
+  categories?: string;
+  brands?: string;
+  packaging?: string;
+  ingredients_analysis_tags?: string[];
+}
+
 import { fetchProductFromAPI } from "../infrastructure/product.repository";
 import { HistoryService } from "../../history/application/history.service";
 
 export const getProductByBarcodeService = async (productId: string, userId: string) => {
-  const product = await fetchProductFromAPI(productId);
-  const historyService = new HistoryService();
+const product = (await fetchProductFromAPI(productId)) as Product;  const historyService = new HistoryService();
 
   if (!product) {
     throw new Error("Product not found");
   }
+
+  
 
   const data = {
     name: product.product_name,
