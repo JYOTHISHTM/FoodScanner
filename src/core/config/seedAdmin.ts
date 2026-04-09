@@ -22,7 +22,7 @@ export const seedAdmin = async () => {
     );
 
     await Admin.create({
-      name: "Super Admin",
+      name: "Admin",
       email: process.env.ADMIN_EMAIL,
       password: hashedPassword,
       role: "admin",
