@@ -6,4 +6,4 @@ const router = express.Router();
 
 router.post("/", scanProduct);
 
-export default router;
+export default router;  

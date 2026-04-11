@@ -26,7 +26,8 @@ import { HistoryService } from "../../history/application/history.service";
 export const getProductByBarcodeService = async (productId: string, userId: string) => {
   const product = (await fetchProductFromAPI(productId)) as Product; const historyService = new HistoryService();
 
-  if (!product) {
+
+  if (!product || !product.product_name) {
     throw new Error("Product not found");
   }
 
@@ -52,13 +53,13 @@ export const getProductByBarcodeService = async (productId: string, userId: stri
     packaging: product.packaging,
 
     palmOil: product.ingredients_text
-  ? product.ingredients_text.toLowerCase().includes("palm")
-  : false,
+      ? product.ingredients_text.toLowerCase().includes("palm")
+      : false,
 
-veg: Array.isArray(product.ingredients_analysis_tags)
-  ? product.ingredients_analysis_tags.includes("en:vegan") ||
-    product.ingredients_analysis_tags.includes("en:vegetarian")
-  : false,
+    veg: Array.isArray(product.ingredients_analysis_tags)
+      ? product.ingredients_analysis_tags.includes("en:vegan") ||
+      product.ingredients_analysis_tags.includes("en:vegetarian")
+      : false,
   };
 
   const score = calculateScore(data);
