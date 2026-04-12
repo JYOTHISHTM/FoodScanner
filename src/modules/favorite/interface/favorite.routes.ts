@@ -1,10 +1,12 @@
 import express from "express";
 import { toggleFavorite, getFavorites, checkFavorite } from "./favorite.controller";
+import { authMiddleware } from "../../../core/middlewares/auth.middleware";
+
 
 const router = express.Router();
 
-router.post("/", toggleFavorite);
-router.get("/", getFavorites);
-router.get("/check", checkFavorite);
+router.post("/",authMiddleware, toggleFavorite);
+router.get("/",authMiddleware, getFavorites);
+router.get("/check",authMiddleware, checkFavorite);
 
 export default router;
