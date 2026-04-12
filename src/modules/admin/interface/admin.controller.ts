@@ -8,7 +8,7 @@ export const adminLoginController = async (req: Request, res: Response) => {
   try {
     const { email, password } = req.body;
     const data = await adminLoginService(email, password);
-    
+
     res.json(data);
   } catch (err: any) {
     res.status(401).json({ message: err.message });
