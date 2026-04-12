@@ -27,6 +27,11 @@ export const googleLoginService = async (token: string) => {
 
   const user = await findOrCreateUser(email, name);
 
+  if (user.isBlocked) {
+    throw new Error("Your account has been blocked by admin");
+  }
+
+
   const jwtToken = jwt.sign(
     { id: user._id },
     process.env.JWT_SECRET as string,
@@ -43,6 +48,13 @@ export const googleLoginService = async (token: string) => {
 
 // SEND OTP
 export const sendOtpService = async (email: string) => {
+
+   const user = await User.findOne({ email });
+
+  if (user && user.isBlocked) {
+    throw new Error("Your account has been blocked by admin");
+  }
+
   const otp = generateOtp();
 
   await saveOtp(email, otp);
@@ -59,8 +71,8 @@ export const verifyOtpService = async (email: string, otp: string) => {
   let user = await User.findOne({ email });
 
   if (!user) {
-    user = await User.create({ 
-      email, 
+    user = await User.create({
+      email,
       name: email.split('@')[0]   // better default name
     });
   }
