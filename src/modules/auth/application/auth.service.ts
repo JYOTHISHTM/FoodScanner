@@ -1,8 +1,7 @@
 import jwt from "jsonwebtoken";
-import { verifyGoogleToken } from "../infrastructure/auth.repository";
-import { findOrCreateUser } from "../infrastructure/auth.repository";
-
 import {
+  verifyGoogleToken,
+  findOrCreateUser,
   generateOtp,
   saveOtp,
   verifyOtp,
@@ -11,26 +10,29 @@ import {
 
 import User from "../../user/domain/user.model";
 
+import { MESSAGES } from "../../../core/constants/messages";
+import { HTTP_STATUS } from "../../../core/constants/httpStatus";
 
-
+// ---------------- GOOGLE LOGIN ----------------
 
 export const googleLoginService = async (token: string) => {
   const payload = await verifyGoogleToken(token);
 
-
   if (!payload || !payload.email || !payload.name) {
-    throw new Error("Invalid token: Missing profile information");
+    const error: any = new Error(MESSAGES.AUTH.INVALID_TOKEN);
+    error.statusCode = HTTP_STATUS.UNAUTHORIZED;
+    throw error;
   }
-
 
   const { email, name } = payload;
 
   const user = await findOrCreateUser(email, name);
 
   if (user.isBlocked) {
-    throw new Error("Your account has been blocked by admin");
+    const error: any = new Error(MESSAGES.USER.USER_BLOCKED);
+    error.statusCode = HTTP_STATUS.FORBIDDEN;
+    throw error;
   }
-
 
   const jwtToken = jwt.sign(
     { id: user._id },
@@ -44,15 +46,15 @@ export const googleLoginService = async (token: string) => {
   };
 };
 
+// ---------------- SEND OTP ----------------
 
-
-// SEND OTP
 export const sendOtpService = async (email: string) => {
-
-   const user = await User.findOne({ email });
+  const user = await User.findOne({ email });
 
   if (user && user.isBlocked) {
-    throw new Error("Your account has been blocked by admin");
+    const error: any = new Error(MESSAGES.USER.USER_BLOCKED);
+    error.statusCode = HTTP_STATUS.FORBIDDEN;
+    throw error;
   }
 
   const otp = generateOtp();
@@ -60,20 +62,28 @@ export const sendOtpService = async (email: string) => {
   await saveOtp(email, otp);
   await sendEmail(email, otp);
 
-  return { message: "OTP sent to email" };
+  return {
+    message: MESSAGES.AUTH.OTP_SENT,
+  };
 };
 
-// VERIFY OTP
+// ---------------- VERIFY OTP ----------------
+
 export const verifyOtpService = async (email: string, otp: string) => {
   const isValid = await verifyOtp(email, otp);
-  if (!isValid) throw new Error("Invalid or expired OTP");
+
+  if (!isValid) {
+    const error: any = new Error(MESSAGES.AUTH.INVALID_OTP);
+    error.statusCode = HTTP_STATUS.BAD_REQUEST;
+    throw error;
+  }
 
   let user = await User.findOne({ email });
 
   if (!user) {
     user = await User.create({
       email,
-      name: email.split('@')[0]   // better default name
+      name: email.split("@")[0],
     });
   }
 

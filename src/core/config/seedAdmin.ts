@@ -1,18 +1,15 @@
-
-
-// src/core/config/seedAdmin.ts
-
 import Admin from "../../modules/admin/domain/admin.model";
 import bcrypt from "bcrypt";
+import { MESSAGES } from "../constants/messages";
 
-export const seedAdmin = async () => {
+export const seedAdmin = async (): Promise<void> => {
   try {
     const existing = await Admin.findOne({
       email: process.env.ADMIN_EMAIL,
     });
 
     if (existing) {
-      console.log("✅ Admin already exists");
+      console.log(`✅ ${MESSAGES.ADMIN.ADMIN_EXISTS}`);
       return;
     }
 
@@ -28,8 +25,8 @@ export const seedAdmin = async () => {
       role: "admin",
     });
 
-    console.log("✅ Admin created from .env");
+    console.log(`✅ ${MESSAGES.ADMIN.ADMIN_CREATED}`);
   } catch (err) {
-    console.log("❌ Admin seeding failed", err);
+    console.error(`❌ ${MESSAGES.ADMIN.ADMIN_SEED_FAILED}`, err);
   }
 };

@@ -1,19 +1,33 @@
+import {
+  findAdminByEmail,
+  comparePassword,
+  generateAdminToken,
+} from "../infrastructure/admin.repository";
 
+import { MESSAGES } from "../../../core/constants/messages";
+import { HTTP_STATUS } from "../../../core/constants/httpStatus";
 
-
-import { findAdminByEmail, comparePassword, generateAdminToken } from "../infrastructure/admin.repository";
-
-export const adminLoginService = async (email: string, password: string) => {
+export const adminLoginService = async (
+  email: string,
+  password: string
+) => {
   const admin = await findAdminByEmail(email);
-  
-  if (!admin) throw new Error("Invalid credentials");
+
+  if (!admin) {
+    const error: any = new Error(MESSAGES.AUTH.INVALID_CREDENTIALS);
+    error.statusCode = HTTP_STATUS.UNAUTHORIZED;
+    throw error;
+  }
 
   const isMatch = await comparePassword(password, admin.password);
-  
-  if (!isMatch) throw new Error("Invalid credentials");
+
+  if (!isMatch) {
+    const error: any = new Error(MESSAGES.AUTH.INVALID_CREDENTIALS);
+    error.statusCode = HTTP_STATUS.UNAUTHORIZED;
+    throw error;
+  }
 
   const token = generateAdminToken(admin._id.toString());
-  
 
   return {
     token,
